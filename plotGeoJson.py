@@ -22,12 +22,18 @@ def firstCoord(x):
 
 
 
-def justDots(x,y):
-    plt.figure(figsize=(16,9))
-    plt.scatter(x,y,s=0.5,marker=",",antialiased=False)
-    plt.gca().set_aspect('equal', adjustable='box')
+def justDots(x,y,figsize):
+    plt.figure(figsize=figsize) #Size of final image. figsize * 160 = resolution
+    plt.scatter(x,y,s=0.5,marker=",",antialiased=False) 
+    plt.gca().set_aspect('equal', adjustable='box') #Prevents the figure from having latitude&longitude skewed
     plt.axis("off")
     plt.savefig("justDots.png",facecolor="black",dpi=160)
+
+def heatMap(x,y,gridsize):
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.hexbin(x,y,gridsize=gridsize,bins="log",cmap='inferno',linewidths=0.2)
+    plt.axis("off")
+    plt.savefig("heatMap.png",dpi=6*gridsize,bbox_inches='tight',facecolor="black")
 
 #mainline
     
@@ -46,7 +52,18 @@ else:
     npArr = np.array(coordList)
     x, y = npArr.T
 
-    justDots(x,y)
+    #Get plot type & params from user, execute function
+    try:
+        print("'dots' or 'heat'?")
+        entry = input()
+        if(entry == 'dots'):
+            print("Figsize in inches? dpi=160 Example: '16,9'")
+            justDots(x,y,tuple(map(float,input().split(','))))
+        elif(entry == 'heat'):
+            print("Number of bins?")
+            heatMap(x,y,int(input()))
+    except:
+        print("Input error")
 
 
 
